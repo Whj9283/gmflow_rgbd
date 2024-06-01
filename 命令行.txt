@@ -1,0 +1,8 @@
+1） git bash here
+2） source activate
+3） conda activate E:/Paper_SparseSurfelFusion4D/TestCode/GMFlow_RGBD_Python/env/GMFlowRGBD
+4） sh TrainShell.sh
+
+必须进入虚拟环境才能正常运行
+
+python -u main.py  --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 8 --val_dataset sintel --lr 2e-4 --image_size 320 896 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 5000 --num_steps 120000 +

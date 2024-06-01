@@ -1,0 +1,22 @@
+main.py --launcher pytorch --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --local_rank=0 --launcher pytorch --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 436 1024 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
+main.py --launcher none --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 4 --val_dataset sintel --lr 2e-4 --image_size 320 896 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 10000 --num_steps 100000
+
