@@ -108,12 +108,15 @@ class FlowDataset(data.Dataset):
                 else:
                     img1, dpt1, img2, dpt2, flow = self.augmentor(img1, dpt1, img2, dpt2, flow)
 
-
+        print("img1.shape"+str(img1.shape))
+        print("dpt1.shape"+str(dpt1.shape))
         img1 = torch.from_numpy(img1).permute(2, 0, 1).float()
         dpt1 = torch.from_numpy(dpt1).permute(2, 0, 1).float()
         img2 = torch.from_numpy(img2).permute(2, 0, 1).float()
         dpt2 = torch.from_numpy(dpt2).permute(2, 0, 1).float()
         flow = torch.from_numpy(flow).permute(2, 0, 1).float()
+        print("img1.shape1111"+str(img1.shape))
+        print("dpt1.shape1111"+str(dpt1.shape))
 
         if self.load_occlusion:
             occlusion = torch.from_numpy(occlusion)  # [H, W]
@@ -144,7 +147,7 @@ class FlowDataset(data.Dataset):
 
 class MpiSintel(FlowDataset):
     def __init__(self, aug_params=None, split='training',
-                 root='F:\datasets\Sintel',
+                 root='datasets/Sintel',
                  dstype='clean',
                  load_occlusion=False,
                  ):
@@ -201,7 +204,7 @@ class FlyingChairs(FlowDataset):
 class FlyingThings3D(FlowDataset):
     def __init__(self, aug_params=None,
                  root='datasets/FlyingThings3D',
-                 dstype='frames_cleanpass',
+                 dstype='clean/frames_cleanpass',
                  test_set=False,
                  validate_subset=True,
                  ):
@@ -209,6 +212,11 @@ class FlyingThings3D(FlowDataset):
 
         img_dir = root
         flow_dir = root
+        depth_dir = root  # 添加深度图目录
+        #具体的路径在下面循环里join
+        # img_dir = osp.join(root, dstype)
+        # depth_dir = osp.join(root, 'disparity')  # 添加深度图目录
+        # flow_dir = osp.join(root, 'flow/flyingthings3d__optical_flow/optical_flow')
 
         for cam in ['left']:
             for direction in ['into_future', 'into_past']:
@@ -219,23 +227,36 @@ class FlyingThings3D(FlowDataset):
                 image_dirs = sorted([osp.join(f, cam) for f in image_dirs])
 
                 if test_set:
-                    flow_dirs = sorted(glob(osp.join(flow_dir, 'optical_flow/TEST/*/*')))
+                    flow_dirs = sorted(glob(osp.join(flow_dir, 'flow/flyingthings3d__optical_flow/optical_flow/TEST/*/*')))
                 else:
-                    flow_dirs = sorted(glob(osp.join(flow_dir, 'optical_flow/TRAIN/*/*')))
+                    flow_dirs = sorted(glob(osp.join(flow_dir, 'flow/flyingthings3d__optical_flow/optical_flow/TRAIN/*/*')))
                 flow_dirs = sorted([osp.join(f, direction, cam) for f in flow_dirs])
 
+                if test_set:
+                    depth_dirs = sorted(glob(osp.join(depth_dir, 'disparity/TEST/*/*')))
+                else:
+                    depth_dirs = sorted(glob(osp.join(depth_dir, 'disparity/TRAIN/*/*')))
+                depth_dirs = sorted([osp.join(f, cam) for f in depth_dirs])
+
+                # print("depth_dirs:"+str(len(depth_dirs)))
 
                 # 代码中的循环遍历了两个目录列表 image_dirs 和 flow_dirs，使用 zip() 函数将它们进行配对。每个配对包含一个图像目录路径和一个光流目录路径
-                for idir, fdir in zip(image_dirs, flow_dirs):
+                # 现在加入第三个深度信息
+                for idir, fdir, ddir in zip(image_dirs, flow_dirs, depth_dirs):
                     images = sorted(glob(osp.join(idir, '*.png')))
                     flows = sorted(glob(osp.join(fdir, '*.pfm')))
+                    depths = sorted(glob(osp.join(ddir, '*.pfm')))
+                    # print("ddir:"+str(len(ddir)))
+                    # print("depths:"+str(len(depths)))
                     for i in range(len(flows) - 1):
                         if direction == 'into_future':
                             self.image_list += [[images[i], images[i + 1]]]
                             self.flow_list += [flows[i]]
+                            self.depth_list += [[depths[i], depths[i + 1]]]  # 添加深度图信息
                         elif direction == 'into_past':
                             self.image_list += [[images[i + 1], images[i]]]
                             self.flow_list += [flows[i + 1]]
+                            self.depth_list += [[depths[i + 1], depths[i]]]  # 添加深度图信息
 
 
 
@@ -253,7 +274,7 @@ class FlyingThings3D(FlowDataset):
 
 class Monkaa(FlowDataset):
     def __init__(self, aug_params=None,
-                 root='F:\datasets\Monkaa',
+                 root='datasets\Monkaa',
                  dstype='clean',
                  ):
         super(Monkaa, self).__init__(aug_params)
@@ -337,18 +358,17 @@ def build_train_dataset(args):
     if args.stage == 'things':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.4, 'max_scale': 0.8, 'do_flip': True}
 
-        clean_dataset = FlyingThings3D(aug_params, dstype='frames_cleanpass')
-        final_dataset = FlyingThings3D(aug_params, dstype='frames_finalpass')
+        clean_dataset = FlyingThings3D(aug_params, dstype='clean/frames_cleanpass')
+        final_dataset = FlyingThings3D(aug_params, dstype='final/frames_finalpass')
         train_dataset = clean_dataset + final_dataset
+        
 
     elif args.stage == 'sintel':
         # 1041 pairs for clean and final each
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
 
         things = FlyingThings3D(aug_params, dstype='frames_cleanpass')  # 40302
-
-        monkaa = Monkaa(aug_params, dstype='clean')
-
+        # monkaa = Monkaa(aug_params, dstype='clean')
         sintel_clean = MpiSintel(aug_params, split='training', dstype='clean')
         sintel_final = MpiSintel(aug_params, split='training', dstype='final')
 
@@ -356,20 +376,18 @@ def build_train_dataset(args):
         # aug_params = {'crop_size': args.image_size, 'min_scale': -0.3, 'max_scale': 0.5, 'do_flip': True}
         #
         # kitti = KITTI(aug_params=aug_params)  # 200
-
         # aug_params = {'crop_size': args.image_size, 'min_scale': -0.5, 'max_scale': 0.2, 'do_flip': True}
         #
         # hd1k = HD1K(aug_params=aug_params)  # 1047
-
         # train_dataset = 100 * sintel_clean + 100 * sintel_final + 200 * kitti + 5 * hd1k + things
+        # train_dataset = sintel_clean + sintel_final   # 将每个数据对象重复添加到train_dataset 100次 用于控制当前数据集的权重
+        train_dataset = 100*sintel_clean + 100*sintel_final + things
 
-        train_dataset = sintel_clean + sintel_final   # 将每个数据对象重复添加到train_dataset 100次 用于控制当前数据集的权重
-
-    # elif args.stage == 'kitti':
-    #     aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.4, 'do_flip': False}
-    #
-    #     train_dataset = KITTI(aug_params, split='training',
-    #                           )
+    elif args.stage == 'kitti':
+        aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.4, 'do_flip': False}
+    
+        train_dataset = KITTI(aug_params, split='training',
+                              )
     else:
         raise ValueError(f'stage {args.stage} is not supported')
 

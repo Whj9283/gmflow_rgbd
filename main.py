@@ -582,8 +582,8 @@ def main(args):
                 print('Training done')
                 return
             
-            # if total_steps % 100 == 0:
-            #     print('now at step : %d' % total_steps)
+            
+            print('now at step : %d' % total_steps)
         
         epoch += 1
 
