@@ -5,4 +5,11 @@
 
 必须进入虚拟环境才能正常运行
 
-python -u main.py  --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 8 --val_dataset sintel --lr 2e-4 --image_size 320 896 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 5000 --num_steps 120000 +
+训练：
+python -u main.py  --checkpoint_dir checkpoints/sintel-gmflow --stage sintel --batch_size 8 --val_dataset sintel --lr 2e-4 --image_size 320 896 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 20000 --save_ckpt_freq 5000 --num_steps 120000 
+python -u main.py  --checkpoint_dir checkpoints/things --stage things --batch_size 8 --val_dataset sintel --lr 2e-4 --image_size 384 768 --padding_factor 16 --upsample_factor 8 --with_speed_metric --val_freq 150 --save_ckpt_freq 100 --num_steps 300 
+--val_dataset things sintel kitti \
+继续训练加上：--resume checkpoints/chairs-gmflow/checkpoint_latest.pth
+
+evaluate：
+CUDA_VISIBLE_DEVICES=0 python main.py --eval --val_dataset things sintel --resume checkpoints/sintel-gmflow/step_120000.pth
