@@ -13,3 +13,14 @@ python -u main.py  --checkpoint_dir checkpoints/things --stage things --batch_si
 
 evaluate：
 CUDA_VISIBLE_DEVICES=0 python main.py --eval --val_dataset things sintel --resume checkpoints/sintel-gmflow/step_120000.pth
+
+# 创建新终端，并命名为runner(或者其他名字)
+tmux new -s runner(or another name)
+# 列出当前所有虚拟终端
+tmux ls
+# 连接到指定虚拟终端
+tmux attach -t runner
+# 虚拟终端中退出，命令都是英语单词
+tmux detach 
+# 删除虚拟终端
+tmux kill-session -t runner
