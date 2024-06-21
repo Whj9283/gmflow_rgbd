@@ -86,7 +86,6 @@ class FlowAugmentor:
     '''
     def spatial_transform(self, img1, dpt1, img2, dpt2, flow, occlusion=None):
         # 随机抽样放缩
-
         ht, wd = img1.shape[:2]
         min_scale = np.maximum((self.crop_size[0] + 8) / float(ht), (self.crop_size[1] + 8) / float(wd))
 
@@ -100,7 +99,9 @@ class FlowAugmentor:
         scale_x = np.clip(scale_x, min_scale, None)
         scale_y = np.clip(scale_y, min_scale, None)
 
-        if np.random.rand() < self.spatial_aug_prob:
+        # print("dpt0.shape"+str(dpt1.shape))
+
+        if np.random.rand() < self.spatial_aug_prob:    # 经过这里的depth均变为shape均变为3维
             # 重新缩放图像
             img1 = cv2.resize(img1, None, fx=scale_x, fy=scale_y, interpolation=cv2.INTER_LINEAR)
             dpt1 = cv2.resize(dpt1, None, fx=scale_x, fy=scale_y, interpolation=cv2.INTER_LINEAR)
@@ -113,6 +114,14 @@ class FlowAugmentor:
 
             if occlusion is not None:
                 occlusion = cv2.resize(occlusion, None, fx=scale_x, fy=scale_y, interpolation=cv2.INTER_LINEAR)
+            
+            # print("dpt1.shape"+str(dpt1.shape))    
+        else:
+            dpt1 = np.expand_dims(dpt1, axis=2)     # 维度为1会降维
+            dpt2 = np.expand_dims(dpt2, axis=2)
+            # print("dpt2.shape"+str(dpt1.shape))
+
+        # print("dpt3.shape"+str(dpt1.shape))
 
         if self.do_flip:
             if np.random.rand() < self.h_flip_prob:  # 水平翻转
